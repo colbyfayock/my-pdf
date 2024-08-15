@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ChevronDown, CreditCard, Download, Ellipsis, Trash } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
+import { cn, downloadUrl } from '@/lib/utils';
 
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -32,11 +32,13 @@ const Invoice = ({ invoice }: InvoiceProps) => {
   const status = AVAILABLE_STATUSES.find(status => status.id === invoice.status);
 
   async function handleOnClick() {
-    const html2pdf = await require('html2pdf.js')
-    const element = document.querySelector('#invoice');
-    html2pdf(element, {
-      margin: 20
-    });
+    // const html2pdf = await require('html2pdf.js')
+    // const element = document.querySelector('#invoice');
+    // html2pdf(element, {
+    //   margin: 20
+    // });
+
+    downloadUrl(`/invoices/${invoice.id}/pdf`, 'invoice.pdf')
   }
   
   return (
