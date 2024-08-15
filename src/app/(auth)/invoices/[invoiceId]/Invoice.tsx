@@ -1,5 +1,7 @@
+"use client";
+
 import Link from 'next/link';
-import { ChevronDown, CreditCard, Ellipsis, Trash } from 'lucide-react';
+import { ChevronDown, CreditCard, Download, Ellipsis, Trash } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -28,9 +30,17 @@ interface InvoiceProps {
 
 const Invoice = ({ invoice }: InvoiceProps) => {
   const status = AVAILABLE_STATUSES.find(status => status.id === invoice.status);
+
+  async function handleOnClick() {
+    const html2pdf = await require('html2pdf.js')
+    const element = document.querySelector('#invoice');
+    html2pdf(element, {
+      margin: 20
+    });
+  }
   
   return (
-    <Container>
+    <Container id="invoice">
       <p className="text-sm font-semibold text-blue-600 mb-2">
         <Link href="/dashboard">Invoices</Link>
       </p>
@@ -56,7 +66,7 @@ const Invoice = ({ invoice }: InvoiceProps) => {
           </p>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-4" data-html2canvas-ignore>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="flex gap-2">
@@ -87,7 +97,12 @@ const Invoice = ({ invoice }: InvoiceProps) => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem className="flex gap-2 items-center py-2 px-2.5" asChild>
-                  <CreditCard className="w-4 h-4" /> Payment
+                  <button onClick={handleOnClick}>
+                    <Download className="w-4 h-4" /> Download PDF
+                  </button>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex gap-2 items-center py-2 px-2.5" asChild>
+                  <span><CreditCard className="w-4 h-4" /> Payment</span>
                 </DropdownMenuItem>
                 <DialogTrigger asChild>
                   <DropdownMenuItem className="flex gap-2 items-center py-2 px-2.5">
