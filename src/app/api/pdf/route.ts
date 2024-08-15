@@ -1,6 +1,8 @@
 import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-core';
 import { v2 as cloudinary } from 'cloudinary';
+import { createClerkClient } from '@clerk/backend';
+import { auth } from '@clerk/nextjs/server';
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -10,7 +12,30 @@ cloudinary.config({
 
 export const maxDuration = 20;
 
+// NOTE: This is not in a working state as this application isn't
+// configured for Clerk, this is just an example of how it can
+// be set up for creating an authenticated Puppeteer session
+
 export async function POST(request: Request) {
+  const { userId } = auth();
+  const expiresInSeconds = 60 * 5; // 5 minutes
+
+  if ( !userId ) {
+    return new Response(JSON.stringify({ error: 'Unauthenticated' }), {
+      status: 401
+    })
+  }
+
+  const clerkClient = createClerkClient({
+    secretKey: process.env.CLERK_SECRET_KEY,
+    publishableKey: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+  });
+
+  const { token } = await clerkClient.signInTokens.createSignInToken({
+    userId,
+    expiresInSeconds,
+  });
+
   const { siteUrl } = await request.json();
 
   const isLocal = !!process.env.CHROME_EXECUTABLE_PATH;
@@ -24,7 +49,7 @@ export async function POST(request: Request) {
 
   const page = await browser.newPage();
   
-  await page.goto(siteUrl);
+  await page.goto(`${request.headers.get('origin')}/accept-token?token=${token}&redirect=${siteUrl}`);
 
   await page.waitForNetworkIdle()
 
