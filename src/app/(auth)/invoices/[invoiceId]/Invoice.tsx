@@ -38,9 +38,19 @@ const Invoice = ({ invoice }: InvoiceProps) => {
     //   margin: 20
     // });
 
-    downloadUrl(`/invoices/${invoice.id}/pdf`, 'invoice.pdf')
+    // downloadUrl(`/invoices/${invoice.id}/pdf`, 'invoice.pdf')
+
+    const { resource } = await fetch('/api/pdf', {
+      method: 'POST',
+      body: JSON.stringify({
+        // Unauthenticated, public page
+        siteUrl: 'http://localhost:3000/'
+      })
+    }).then(r => r.json())
+
+    downloadUrl(resource.secure_url, 'invoice.pdf')
   }
-  
+
   return (
     <Container id="invoice">
       <p className="text-sm font-semibold text-blue-600 mb-2">
