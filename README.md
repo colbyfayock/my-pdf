@@ -1,10 +1,10 @@
-# HTML to PDF in JavaScript
+# Generate a PDF in React with JavaScript
 
-Demo for tutorial
+Demo for tutorial [Generate a PDF in React](https://www.youtube.com/watch?v=4V5HbqYJCVI)
 
-📝 Article: 
+📝 Article: https://spacejelly.dev/posts/generate-a-pdf-from-html-in-javascript
 
-📺 YouTube: 
+📺 YouTube: https://www.youtube.com/watch?v=4V5HbqYJCVI
 
 ## More tutorials and walkthroughs
 
